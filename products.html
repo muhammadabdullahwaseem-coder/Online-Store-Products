@@ -64,53 +64,73 @@
         if (response) getAllProducts();
       }
 
-      async function editProduct(id) {
-        let response = await axios.get(`${baseUrl}/product/${id}`).catch((e) => {
-            console.log("error: ", e);
-            return;
-          });
+     async function editProduct(id) {
+    console.log("Fetching product ID:", id);
 
-        if (response) {
-          let product = response.data.data;
-          document.querySelector("#updateForm").innerHTML = `
-                <div class="updateFormContainer" onclick="closeUpdateForm(event)">
-                    <form class="updateForm" onclick="event.stopPropagation()" onsubmit="completeUpdate(); return false ">
-                        <h2>Edit Product</h2>
-                        
-                        <label for="productId">Product Id</label>
-                        <input type="text" id="productId" value="${product._id}" disabled>
+    let response = await axios.get(`${baseUrl}/product/${id}`)
+        .catch((e) => {
+            console.log("Error fetching product:", e);
+            return null;
+        });
 
-                        <label for="productName">Product Name</label>
-                        <input type="text" id="productName" value="${product.productName}" required>
+    if (response && response.data && response.data.data) {
+        let product = response.data.data;
 
-                        <label for="productPrice">Price</label>
-                        <input type="number" id="productPrice" value="${product.productPrice}" required>
+        // INJECT THE POPUP HTML
+        // Note the outer 'updateFormContainer' div - this is key for the popup!
+        document.querySelector("#updateForm").innerHTML = `
+            <div class="updateFormContainer" id="modalOverlay">
+                <form onsubmit="completeUpdate(); return false ">
+                    <h2>Edit Product</h2>
+                    
+                    <label for="productId">Product ID</label>
+                    <input type="text" id="productId" value="${product._id}" disabled style="opacity: 0.6; cursor: not-allowed;">
 
-                        <label for="currencyCode">Currency</label>
-                        <input type="text" id="currencyCode" value="${product.currencyCode}" required>
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" value="${product.productName}" required>
 
-                        <label for="numberOfSale">Sales Count</label>
-                        <input type="number" id="numberOfSale" value="${product.numberOfSale}" required>
+                    <label for="productPrice">Price</label>
+                    <input type="number" id="productPrice" value="${product.productPrice}" required>
 
-                        <label for="rating">Rating</label>
-                        <input type="number" min="0" max="5" id="rating" value="${product.rating}" required>
+                    <label for="currencyCode">Currency</label>
+                    <input type="text" id="currencyCode" value="${product.currencyCode}" required>
 
-                        <label for="isFreeShipping">Free Shipping</label>
-                        <select name="isFreeShipping" id="isFreeShipping">
-                            <option ${product.isFreeShipping ? "selected" : ""} value="true">Yes</option>
-                            <option ${!product.isFreeShipping ? "selected" : ""} value="false">No</option>
-                        </select>
+                    <label for="numberOfSale">Sales Count</label>
+                    <input type="number" id="numberOfSale" value="${product.numberOfSale}" required>
 
-                        <label for="shopName">Shop Name</label>
-                        <input type="text" id="shopName" value="${product.shopName}" required>
+                    <label for="rating">Rating (0-5)</label>
+                    <input type="number" min="0" max="5" id="rating" value="${product.rating}" required>
 
-                        <input type="submit" value="Update Product">
-                        <button type="button" onclick="document.querySelector('#updateForm').innerHTML = ''" style="width:100%; background:#555; border:none; color:white; padding:10px; border-radius:4px; margin-top:10px; cursor:pointer;">Cancel</button>
-                    </form>
-                </div>
-                `;
-        }
-      }
+                    <label for="isFreeShipping">Free Shipping</label>
+                    <select name="isFreeShipping" id="isFreeShipping">
+                        <option ${product.isFreeShipping ? "selected" : ""} value="true">Yes</option>
+                        <option ${!product.isFreeShipping ? "selected" : ""} value="false">No</option>
+                    </select>
+
+                    <label for="shopName">Shop Name</label>
+                    <input type="text" id="shopName" value="${product.shopName}" required>
+
+                    <input type="submit" value="Update Now">
+                    
+                    <button type="button" onclick="closeModal()">Cancel</button>
+                </form>
+            </div>
+        `;
+    }
+}
+
+// Helper function to close the modal
+function closeModal() {
+    document.querySelector("#updateForm").innerHTML = "";
+}
+
+// Close modal if user clicks outside the form (on the dark background)
+window.onclick = function(event) {
+    let modal = document.getElementById('modalOverlay');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
 
       function closeUpdateForm(event) {
           document.querySelector("#updateForm").innerHTML = ``;
@@ -126,6 +146,7 @@
         let isFreeShipping = document.querySelector("#isFreeShipping").value;
         let shopName = document.querySelector("#shopName").value;
 
+        // ... (rest of your completeUpdate function above) ...
         axios.put(`${baseUrl}/product/${productId}`, {
             productName, productPrice, currencyCode, numberOfSale, rating, isFreeShipping, shopName
           })
@@ -137,6 +158,9 @@
             console.log(error.response.data);
           });
       }
+      
+      // Ensure this function is called when the page loads!
+      getAllProducts(); 
     </script>
   </body>
 </html>
