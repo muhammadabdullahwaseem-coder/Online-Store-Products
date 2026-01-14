@@ -1,0 +1,217 @@
+/* --- Global Reset & Typography --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* --- PORTFOLIO GRADIENT BACKGROUND --- */
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background-attachment: fixed; /* Keeps bg still while scrolling */
+    color: #e0e0e0;
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 198, 255, 0.5); /* Glowing text */
+}
+
+/* --- LIQUID GLASS NAVIGATION --- */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 16px;
+    
+    /* GLASS EFFECT */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+    text-decoration: none;
+    color: #00c6ff; /* Cyan link color */
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: relative;
+    transition: all 0.3s;
+}
+
+nav a:hover {
+    color: #fff;
+    text-shadow: 0 0 10px #00c6ff;
+}
+
+/* --- LIQUID GLASS FORM --- */
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 20px;
+    
+    /* GLASS EFFECT */
+    background: rgba(0, 0, 0, 0.2); /* Darker glass for readability */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #b8c6db;
+}
+
+form input[type="text"],
+form input[type="number"],
+form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    
+    /* Glass Inputs */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+form input:focus, form select:focus {
+    outline: none;
+    border-color: #00c6ff;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 198, 255, 0.2);
+}
+
+/* --- LIQUID GLASS BUTTONS --- */
+form input[type="submit"], button {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px; /* Pill shape */
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    margin-top: 10px;
+    
+    /* LIQUID GRADIENT */
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine effect on hover */
+form input[type="submit"]:hover, button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 198, 255, 0.6);
+}
+
+/* Specific Button Colors */
+button.delete {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+}
+button.delete:hover {
+    box-shadow: 0 6px 20px rgba(255, 65, 108, 0.6);
+}
+
+button.edit {
+    margin-bottom: 10px; /* Spacing between buttons */
+}
+
+/* --- PRODUCT GRID (GLASS CARDS) --- */
+#productsListDiv {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+#productsListDiv > div {
+    width: 260px;
+    padding: 20px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    /* GLASS EFFECT STANDARD STATE */
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+/* --- ELECTRIC GRADIENT BORDER HOVER --- */
+#productsListDiv > div:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.07); /* Slightly lighter on hover */
+    
+    /* Gradient Border Trick */
+    border: 1px solid transparent; 
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.4), /* Deep shadow */
+        0 0 20px rgba(0, 198, 255, 0.4), /* Blue Glow */
+        inset 0 0 20px rgba(0, 198, 255, 0.1); /* Inner Glow */
+        
+    border-image: linear-gradient(135deg, #00c6ff, #0072ff) 1;
+    /* Note: border-radius with border-image is tricky in CSS. 
+       If you want perfect rounded gradient borders, stick to box-shadow glow 
+       or use the background-clip method provided in the previous answer. 
+       Below preserves the GLASS look primarily. */
+    border: 1px solid rgba(0, 198, 255, 0.5);
+}
+
+/* Images inside cards */
+#productsListDiv > div > img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.9); /* Slight transparency on white bg */
+    border-radius: 8px;
+    padding: 5px;
+}
+
+/* Text Styles */
+#productsListDiv > div > p:nth-of-type(1) { /* Title */
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #fff;
+    height: 50px;
+    overflow: hidden;
+}
+
+#productsListDiv > div > p > span:nth-child(2) { /* Price */
+    font-size: 1.4rem;
+    color: #00e5ff; /* Cyan Price */
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+/* --- POPUP MODAL --- */
+.updateFormContainer {
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+}

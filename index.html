@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <h1>Add New Product</h1>
+
+    <nav>
+        <a href="./index.html">Home</a>
+        <a href="./products.html">All Products</a>
+    </nav>
+
+    <form onsubmit="createProduct(); return false ">
+        <label for="productName">Product Name</label>
+        <input type="text" id="productName" required placeholder="e.g. Smart Watch">
+
+        <label for="productPrice">Product Price</label>
+        <input type="number" id="productPrice" required placeholder="e.g. 5000">
+
+        <label for="currencyCode">Currency Code</label>
+        <input type="text" id="currencyCode" required placeholder="PKR">
+
+        <label for="numberOfSale">Number Of Sales</label>
+        <input type="number" id="numberOfSale" required placeholder="0">
+
+        <label for="rating">Product Rating</label>
+        <input type="number" min="0" max="5" id="rating" required placeholder="0-5">
+
+        <label for="isFreeShipping">Free Shipping</label>
+        <select name="isFreeShipping" id="isFreeShipping">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+
+        <label for="shopName">Shop Name</label>
+        <input type="text" id="shopName" required placeholder="e.g. Tech Store">
+
+        <input type="submit" value="Add Product">
+    </form>
+
+    <p id="message"></p>
+
+    <script>
+        // Base URL for the API, determined by whether the page is served over HTTPS or HTTP
+        let baseUrl;
+
+        if (window.location.href.indexOf("https") === -1) {
+            baseUrl = "http://localhost:9999"; 
+        } else {} 
+
+        // Function to create a new product
+        function createProduct() {
+            // Get values from the form inputs
+            let productName = document.querySelector("#productName").value;
+            let productPrice = document.querySelector("#productPrice").value;
+            let currencyCode = document.querySelector("#currencyCode").value;
+            let numberOfSale = document.querySelector("#numberOfSale").value;
+            let rating = document.querySelector("#rating").value;
+            let isFreeShipping = document.querySelector("#isFreeShipping").value;
+            let shopName = document.querySelector("#shopName").value;
+
+            // Send a POST request to create the product
+            axios.post(`${baseUrl}/product`, {
+                productName,
+                productPrice,
+                currencyCode,
+                numberOfSale,
+                rating,
+                isFreeShipping,
+                shopName,
+            })
+            .then(function (response) {
+                // Log the response, display a success message, and reset the form
+                console.log(response.data);
+                document.querySelector("#message").innerHTML = response.data.message;
+                document.querySelector("form").reset();
+            })
+            .catch(function (error) {
+                // Log the error and display an error message
+                console.log(error.response ? error.response.data : error);
+                document.querySelector("#message").innerHTML = "Error adding product";
+            });
+        }
+    </script>
+</body>
+</html>

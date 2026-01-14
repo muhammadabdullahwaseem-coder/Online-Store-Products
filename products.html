@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Products</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <h1>Online Store Inventory</h1>
+
+    <nav>
+        <a href="./index.html">Home</a>
+        <a href="./products.html">All Products</a>
+    </nav>
+
+    <div id="productsListDiv"></div>
+    <div id="updateForm"></div>
+
+    <script>
+      let baseUrl;
+
+      if (window.location.href.indexOf("https") === -1) {
+        baseUrl = "http://localhost:9999";
+      } else {
+        baseUrl = "https://mongodb-crud-ecommerce-store.herokuapp.com";
+      }
+
+      async function getAllProducts() {
+        try {
+          const response = await axios.get(baseUrl + "/products");
+          let productsListDiv = document.querySelector("#productsListDiv");
+          productsListDiv.innerHTML = "";
+          
+          response.data.data.map((eachProduct) => {
+            productsListDiv.innerHTML += `<div>
+                            <img src="./img/abcd.webp" alt="Product Image">
+                            <p>${eachProduct.productName}</p>
+                            <p> 
+                                <span>${eachProduct.currencyCode}</span> 
+                                <span>${eachProduct.productPrice}</span> 
+                            </p>
+                            <p>${eachProduct.numberOfSale || 0} sold</p>
+                            <p>${eachProduct.isFreeShipping ? "Free Shipping" : "Standard Shipping"}</p>
+                            <p>Seller: ${eachProduct.shopName}</p>
+                            <button class="delete" onclick="deleteProduct('${eachProduct._id}')">Delete</button>
+                            <button class="edit" onclick="editProduct('${eachProduct._id}')">Edit</button>
+                        </div>`;
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      getAllProducts();
+
+      async function deleteProduct(id) {
+        let response = await axios.delete(`${baseUrl}/product/${id}`).catch((e) => {
+            console.log("error: ", e);
+            return;
+          });
+        if (response) getAllProducts();
+      }
+
+      async function editProduct(id) {
+        let response = await axios.get(`${baseUrl}/product/${id}`).catch((e) => {
+            console.log("error: ", e);
+            return;
+          });
+
+        if (response) {
+          let product = response.data.data;
+          document.querySelector("#updateForm").innerHTML = `
+                <div class="updateFormContainer" onclick="closeUpdateForm(event)">
+                    <form class="updateForm" onclick="event.stopPropagation()" onsubmit="completeUpdate(); return false ">
+                        <h2>Edit Product</h2>
+                        
+                        <label for="productId">Product Id</label>
+                        <input type="text" id="productId" value="${product._id}" disabled>
+
+                        <label for="productName">Product Name</label>
+                        <input type="text" id="productName" value="${product.productName}" required>
+
+                        <label for="productPrice">Price</label>
+                        <input type="number" id="productPrice" value="${product.productPrice}" required>
+
+                        <label for="currencyCode">Currency</label>
+                        <input type="text" id="currencyCode" value="${product.currencyCode}" required>
+
+                        <label for="numberOfSale">Sales Count</label>
+                        <input type="number" id="numberOfSale" value="${product.numberOfSale}" required>
+
+                        <label for="rating">Rating</label>
+                        <input type="number" min="0" max="5" id="rating" value="${product.rating}" required>
+
+                        <label for="isFreeShipping">Free Shipping</label>
+                        <select name="isFreeShipping" id="isFreeShipping">
+                            <option ${product.isFreeShipping ? "selected" : ""} value="true">Yes</option>
+                            <option ${!product.isFreeShipping ? "selected" : ""} value="false">No</option>
+                        </select>
+
+                        <label for="shopName">Shop Name</label>
+                        <input type="text" id="shopName" value="${product.shopName}" required>
+
+                        <input type="submit" value="Update Product">
+                        <button type="button" onclick="document.querySelector('#updateForm').innerHTML = ''" style="width:100%; background:#555; border:none; color:white; padding:10px; border-radius:4px; margin-top:10px; cursor:pointer;">Cancel</button>
+                    </form>
+                </div>
+                `;
+        }
+      }
+
+      function closeUpdateForm(event) {
+          document.querySelector("#updateForm").innerHTML = ``;
+      }
+
+      function completeUpdate() {
+        let productId = document.querySelector("#productId").value;
+        let productName = document.querySelector("#productName").value;
+        let productPrice = document.querySelector("#productPrice").value;
+        let currencyCode = document.querySelector("#currencyCode").value;
+        let numberOfSale = document.querySelector("#numberOfSale").value;
+        let rating = document.querySelector("#rating").value;
+        let isFreeShipping = document.querySelector("#isFreeShipping").value;
+        let shopName = document.querySelector("#shopName").value;
+
+        axios.put(`${baseUrl}/product/${productId}`, {
+            productName, productPrice, currencyCode, numberOfSale, rating, isFreeShipping, shopName
+          })
+          .then(function (response) {
+            document.querySelector("#updateForm").innerHTML = ``;
+            getAllProducts();
+          })
+          .catch(function (error) {
+            console.log(error.response.data);
+          });
+      }
+    </script>
+  </body>
+</html>
