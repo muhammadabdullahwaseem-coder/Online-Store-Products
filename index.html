@@ -54,7 +54,9 @@
 
         if (window.location.href.indexOf("https") === -1) {
             baseUrl = "http://localhost:9999"; 
-        } else {} 
+        } else {
+            baseUrl = "https://online-store-products.onrender.com";
+        }
 
         // Function to create a new product
         function createProduct() {
